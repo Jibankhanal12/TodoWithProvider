@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:todo/model/todo_model.dart';
+import 'package:todo/provider/todo_provider.dart';
+import 'package:todo/utils/edit_todo.dart';
+import 'package:todo/utils/snackbar.dart';
 
 class TodoWidget extends StatelessWidget {
   final Todo todo;
@@ -12,10 +16,11 @@ class TodoWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         child: Slidable(
             startActionPane: ActionPane(
+              key: Key(todo.id),
               motion: const ScrollMotion(),
               children: [
                 SlidableAction(
-                  onPressed: (_) {},
+                  onPressed: (context) => editTodo(context, todo),
                   backgroundColor: Colors.blueGrey,
                   icon: Icons.edit,
                   foregroundColor: Colors.white,
@@ -26,7 +31,7 @@ class TodoWidget extends StatelessWidget {
               motion: const ScrollMotion(),
               children: [
                 SlidableAction(
-                  onPressed: (_) {},
+                  onPressed: (context) => deletTodo(context, todo),
                   backgroundColor: Colors.blueGrey,
                   icon: Icons.delete,
                 )
@@ -44,7 +49,13 @@ class TodoWidget extends StatelessWidget {
                 activeColor: Colors.blueGrey,
                 checkColor: Colors.white,
                 value: todo.isDone,
-                onChanged: (_) {}),
+                onChanged: (_) {
+                  final provider =
+                      Provider.of<TodoProvider>(context, listen: false);
+                  final isDone = provider.toogleCheckstatus(todo);
+                  Snackbar.showSnackbar(context,
+                      isDone ? 'Task Completed' : 'Task is not completed');
+                }),
             const SizedBox(height: 20),
             Expanded(
                 child: Column(
@@ -64,4 +75,17 @@ class TodoWidget extends StatelessWidget {
           ],
         ),
       );
+
+  void deletTodo(BuildContext context, Todo todo) {
+    final provider = Provider.of<TodoProvider>(context, listen: false);
+    provider.removeTodo(todo, context);
+    Snackbar.showSnackbar(context, 'Deleted');
+  }
+
+  void editTodo(BuildContext context, Todo todo) {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => EditTodo(
+              todo: todo,
+            )));
+  }
 }

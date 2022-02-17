@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:todo/pages/add_todo.dart';
+import 'package:todo/utils/completed_todo_list.dart';
 import 'package:todo/utils/todoList_widget.dart';
 
 class TodoHomePage extends StatefulWidget {
@@ -14,7 +15,7 @@ class _TodoHomePageState extends State<TodoHomePage> {
   int selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
-    final tabs = [const TodoListWidget(), Container()];
+    final tabs = [const TodoListWidget(), const CompletedTodo()];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red.shade400,

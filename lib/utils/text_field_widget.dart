@@ -86,7 +86,7 @@ class TodoWidgets extends StatelessWidget {
               style: ButtonStyle(
                   backgroundColor:
                       MaterialStateProperty.all(Colors.red.shade400)),
-              onPressed: () {},
+              onPressed: onSaveTodo,
               child: const Text('Save')),
         )
       ],

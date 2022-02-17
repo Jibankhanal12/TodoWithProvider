@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:todo/model/todo_model.dart';
+import 'package:todo/provider/todo_provider.dart';
 import 'package:todo/utils/text_field_widget.dart';
 
 class AddTodo extends StatefulWidget {
@@ -15,11 +18,11 @@ class _AddTodoState extends State<AddTodo> {
   String description = '';
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: AlertDialog(
-        backgroundColor: Colors.white,
-        content: Column(
+    return AlertDialog(
+      backgroundColor: Colors.white,
+      content: Form(
+        key: _formkey,
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -33,11 +36,33 @@ class _AddTodoState extends State<AddTodo> {
               onchangedTitle: (title) => setState(() => this.title = title),
               onchangedDescription: (description) =>
                   setState(() => this.description = description),
-              onSaveTodo: () {},
+              onSaveTodo: () {
+                addTodo();
+              },
             )
           ],
         ),
       ),
     );
+  }
+
+  void addTodo() {
+    final isValid = _formkey.currentState!.validate();
+
+    if (!isValid) {
+      return;
+    } else {
+      final todos = Todo(
+        id: DateTime.now().toString(),
+        title: title,
+        description: description,
+        createdTime: DateTime.now(),
+      );
+
+      final provider = Provider.of<TodoProvider>(context, listen: false);
+      provider.addTodo(todos);
+
+      Navigator.of(context).pop();
+    }
   }
 }
